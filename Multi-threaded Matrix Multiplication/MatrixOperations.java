@@ -18,6 +18,7 @@ public class MatrixOperations {
 
   // method to print the given matrix
   public void matrixPrinter(int[][] matrix, int dimension){
+    System.out.println();
     for (int i = 0; i < dimension; i++) {
       for (int j = 0; j < dimension; j++) {
         System.out.print(matrix[i][j] + " ");

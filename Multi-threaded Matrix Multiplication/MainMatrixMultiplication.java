@@ -2,15 +2,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class MatrixMultiplication {
+public class MainMatrixMultiplication {
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    List<Thread> threads = new ArrayList<>();
+    List<Thread> threadsList = new ArrayList<>();
      
     int dimension = getValidIntInput(scanner, "Enter the dimension of the matrix: ");
+    int threadsAmount = getValidIntInput(scanner, "Enter the thread amount: ");
     int firstRange = getValidIntInput(scanner, "Enter the first range value: ");
     int secondRange = getValidIntInput(scanner, "Enter the second range value: ");
-    int threadsAmount = getValidIntInput(scanner, "Enter the thread amount: ");
 
     // This control is made for perevent creating unused threads.
     // Becouse the max threads we need for the multiplication is equel to the dimenison.
@@ -28,26 +28,17 @@ public class MatrixMultiplication {
     matrix1 = matrixOperations.creat();
     matrix2 = matrixOperations.creat();
 
-    // The last thread is created after the loop
+    // This loop creats the threads and add them to the threadList.
     for(int threadNumber = 0; threadNumber < threadsAmount; threadNumber++) {
       ThreadWorkDistribution thread = new ThreadWorkDistribution(matrix1, matrix2, matrixConclusion, workPerThread, threadNumber, dimension, threadsAmount);
       thread.start();
-      threads.add(thread);
+      threadsList.add(thread);
     }
-
-    // This loop helps the main thread to wait all the threads to finish their work
-    for (Thread th : threads) {
-      try {
-          th.join();
-      } catch (InterruptedException e) {
-          e.printStackTrace();
-      }
-    }
+    // This mehtod joins the thread
+    threadJoiner(threadsList);
 
     matrixOperations.matrixPrinter(matrix1, dimension);
-    System.out.println();
     matrixOperations.matrixPrinter(matrix2, dimension);
-    System.out.println();
     matrixOperations.matrixPrinter(matrixConclusion, dimension);
 
     scanner.close();
@@ -56,7 +47,7 @@ public class MatrixMultiplication {
   // Method to check if the entry is valid or not
   // And scannes the value until it is valid
   private static int getValidIntInput(Scanner scanner, String entry) {
-    System.out.print(entry);
+    System.out.print("\n" + entry);
     while (!scanner.hasNextInt()) {
       System.out.println("Invalid input. Please enter a valid number.");
       scanner.next(); // Clears the invalid input
@@ -64,4 +55,18 @@ public class MatrixMultiplication {
     }
     return scanner.nextInt();
   }
+
+  // By looping the threadsList, all threads are joined. 
+  // This loop helps the main thread to wait all the threads to finish their work.
+  private static void threadJoiner(List<Thread> threadsList) {
+    for (Thread th : threadsList) {
+      try {
+          th.join();
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+    }
+  }
+
+
 }
