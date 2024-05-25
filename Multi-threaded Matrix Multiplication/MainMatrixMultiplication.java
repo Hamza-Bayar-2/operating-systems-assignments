@@ -28,6 +28,8 @@ public class MainMatrixMultiplication {
     matrix1 = matrixOperations.creat();
     matrix2 = matrixOperations.creat();
 
+    long startTime = System.nanoTime();
+
     // This loop creats the threads and add them to the threadList.
     for(int threadNumber = 0; threadNumber < threadsAmount; threadNumber++) {
       ThreadWorkDistribution thread = new ThreadWorkDistribution(matrix1, matrix2, matrixConclusion, workPerThread, threadNumber, dimension, threadsAmount);
@@ -37,9 +39,16 @@ public class MainMatrixMultiplication {
     // This mehtod joins the thread
     threadJoiner(threadsList);
 
-    matrixOperations.matrixPrinter(matrix1, dimension);
-    matrixOperations.matrixPrinter(matrix2, dimension);
-    matrixOperations.matrixPrinter(matrixConclusion, dimension);
+    long endTime = System.nanoTime();
+    long duration = endTime - startTime;
+    double durationInMilliseconds = (double) duration / 1_000_000.0;
+    double durationInSeconds = (double) durationInMilliseconds / 1000.0;
+    System.out.println("İşlem süresi (saniye saniye): " + durationInSeconds);
+    System.out.println();
+
+    // matrixOperations.matrixPrinter(matrix1, dimension);
+    // matrixOperations.matrixPrinter(matrix2, dimension);
+    // matrixOperations.matrixPrinter(matrixConclusion, dimension);
 
     scanner.close();
   }
@@ -47,7 +56,7 @@ public class MainMatrixMultiplication {
   // Method to check if the entry is valid or not
   // And scannes the value until it is valid
   private static int getValidIntInput(Scanner scanner, String entry) {
-    System.out.print("\n" + entry);
+    System.out.print(entry);
     while (!scanner.hasNextInt()) {
       System.out.println("Invalid input. Please enter a valid number.");
       scanner.next(); // Clears the invalid input
