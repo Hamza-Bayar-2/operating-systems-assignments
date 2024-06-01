@@ -7,10 +7,10 @@ public class MainMatrixMultiplication {
     Scanner scanner = new Scanner(System.in);
     List<Thread> threadsList = new ArrayList<>();
      
-    int dimension = getValidIntInput(scanner, "Enter the dimension of the matrix: ");
-    int threadsAmount = getValidIntInput(scanner, "Enter the thread amount: ");
-    int firstRange = getValidIntInput(scanner, "Enter the first range value: ");
-    int secondRange = getValidIntInput(scanner, "Enter the second range value: ");
+    int dimension = getValidIntInput(scanner, "Enter the dimension of the matrix: ", false);
+    int threadsAmount = getValidIntInput(scanner, "Enter the thread amount: ", false);
+    int firstRange = getValidIntInput(scanner, "Enter the first range value: ", true);
+    int secondRange = getValidIntInput(scanner, "Enter the second range value: ", true);
 
     // This control is made for perevent creating unused threads.
     // Becouse the max threads we need for the multiplication is equel to the dimenison.
@@ -44,7 +44,6 @@ public class MainMatrixMultiplication {
     double durationInMilliseconds = (double) duration / 1_000_000.0;
     double durationInSeconds = (double) durationInMilliseconds / 1000.0;
     System.out.println("İşlem süresi (saniye saniye): " + durationInSeconds);
-    System.out.println();
 
     // matrixOperations.matrixPrinter(matrix1, dimension);
     // matrixOperations.matrixPrinter(matrix2, dimension);
@@ -54,16 +53,28 @@ public class MainMatrixMultiplication {
   }
 
   // Method to check if the entry is valid or not
-  // And scannes the value until it is valid
-  private static int getValidIntInput(Scanner scanner, String entry) {
+  // and scannes the value until it is valid.
+  // couldBeSmallerThanZero, if this is true that means the number could be less than zero
+  // but if it is false the number can not be less than zero and if the number is less than zero
+  // a new number will be asked agin.
+  private static int getValidIntInput(Scanner scanner, String entry, boolean couldBeSmallerThanZero) {
     System.out.print(entry);
-    while (!scanner.hasNextInt()) {
-      System.out.println("Invalid input. Please enter a valid number.");
-      scanner.next(); // Clears the invalid input
-      System.out.print(entry);
+    while (true) {
+        if (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.next(); // Clears the invalid input
+            System.out.print(entry);
+        } else {
+            int input = scanner.nextInt();
+            if (!couldBeSmallerThanZero && input < 0) {
+                System.out.println("Invalid input. The number cannot be less than zero.");
+                System.out.print(entry);
+            } else {
+                return input;
+            }
+        }
     }
-    return scanner.nextInt();
-  }
+}
 
   // By looping the threadsList, all threads are joined. 
   // This loop helps the main thread to wait all the threads to finish their work.
