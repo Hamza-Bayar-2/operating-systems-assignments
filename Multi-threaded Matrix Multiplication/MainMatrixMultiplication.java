@@ -20,6 +20,11 @@ public class MainMatrixMultiplication {
 
     // This formula gives approximately the work per thread.
     int workPerThread = (int) Math.round(dimension / (double)threadsAmount);
+    // this controls if the work per thread multiplies by thread amount - 1 is bigger than the dimantion
+    // if so the work per thead decrea 
+    if(workPerThread * (threadsAmount - 1) >= dimension) {
+      workPerThread -= 1;
+    }
 
     int[][] matrix1 = new int[dimension][dimension];
     int[][] matrix2 = new int[dimension][dimension];
@@ -43,7 +48,7 @@ public class MainMatrixMultiplication {
     long duration = endTime - startTime;
     double durationInMilliseconds = (double) duration / 1_000_000.0;
     double durationInSeconds = (double) durationInMilliseconds / 1000.0;
-    System.out.println("İşlem süresi (saniye saniye): " + durationInSeconds);
+    System.out.println("İşlem süresi (saniye): " + durationInSeconds);
 
     // matrixOperations.matrixPrinter(matrix1, dimension);
     // matrixOperations.matrixPrinter(matrix2, dimension);
