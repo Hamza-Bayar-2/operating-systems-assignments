@@ -2,8 +2,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DataBase {
-  // string => id, Integer => 0: available 1: occupied 2: in process.
-  private Map<String, Integer> seatsMap = new LinkedHashMap<>();
+  // string => id, String => name of the passenger
+  private Map<String, String> seatsMap = new LinkedHashMap<>();
   // how many seat does the plane has.
   private int seatAmount;
   // which city does the plane flys
@@ -17,49 +17,43 @@ public class DataBase {
 
   private void setTheInitialSeatsMap() {
     for(int i = 0; i < seatAmount; i++) {
-      seatsMap.put("seat" + i, 0);
+      seatsMap.put("seat" + i, "empty");
     }
   }
 
-  private String seatState(int seatState) {
-    if(seatState == 0) {
+  private String seatState(String passengerName) {
+    if(passengerName.equals("empty")) {
       return "available";
-    } else if(seatState == 1) {
+    } else if(passengerName.contains("writer")) {
       return "occupied";
-    } else if(seatState == 2) {
-      return "in process";
     } else {
       return "out of order";
     }
   }
 
   public void printSeatsAndStates() {
-      // printing the seats and their states
-      seatsMap.forEach((seatId, seatState) -> {
-        System.out.println(seatId + " => sate: " + seatState + " (" + seatState(seatState) + ")");
+    // printing the seats and their states
+    seatsMap.forEach((seatId, passengerName) -> {
+      if(seatState(passengerName).equals("available")) {
+        System.out.println(seatId + " => sate:" + " (" + seatState(passengerName) + ")");
+      } else if(seatState(passengerName).equals("occupied")) {
+        System.out.println(seatId + " => sate:" + " (" + seatState(passengerName) + ")" 
+        + " / Passenger: " + passengerName);
+      }
     });
   }
-  public void printWantedSeatAndState(String seatId) {
-    // printing the seat and its state
-    System.out.println(seatId + " => sate: " + seatsMap.get(seatId) + " (" + seatState(seatsMap.get(seatId)) + ")");
-  }
-  // seatState => 0: available 1: occupied 2: in process.
-  public void changeSeatState(String seatId, Integer seatState) {
+
+  public void changeSeatState(String seatId, String passengerName) {
     if(seatsMap.containsKey(seatId)) {
-      seatsMap.put(seatId, seatState);
+      seatsMap.put(seatId, passengerName);
     }
-  }
-
-
-  public int getSeatAmount() {
-    return this.seatAmount;
   }
 
   public String getFlightName() {
     return this.flightName;
   }
 
-  public int getSeatStateInInt(String seatId) {
-    return (int) seatsMap.get(seatId);
+  public String getpassengerName(String seatId) {
+    return seatsMap.get(seatId);
   }
 }

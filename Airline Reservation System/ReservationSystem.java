@@ -1,29 +1,60 @@
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ReservationSystem {
   public static void main(String[] args) {
+    int readerAmount = 5;
     DataBase dataBase = new DataBase(6, "istanbul");
-    ReaderCustomer readerCustomer0 = new ReaderCustomer(dataBase, "reader-0");
-    ReaderCustomer readerCustomer1 = new ReaderCustomer(dataBase, "reader-1");
-    ReaderCustomer readerCustomer2 = new ReaderCustomer(dataBase, "reader-2");
-    ReaderCustomer readerCustomer3 = new ReaderCustomer(dataBase, "reader-3");
-    WriterCustomer writerCustomer0 = new WriterCustomer(dataBase, "writer-0");
+    ReaderCustomer[] readerCustomersArray = new ReaderCustomer[readerAmount];
+    final Lock lock = new ReentrantLock();
 
+    readerCustomersArray = readerCustomerCreater(readerAmount, lock, dataBase);
 
-    readerCustomer0.start();
-    readerCustomer1.start();
-    readerCustomer2.start();
-    readerCustomer3.start();
+    for (ReaderCustomer readerCustomer : readerCustomersArray) {
+      readerCustomer.start();
+    }
+
+    WriterCustomer writerCustomer0 = new WriterCustomer(dataBase, lock,  "writer-0");
+    WriterCustomer writerCustomer1 = new WriterCustomer(dataBase, lock,  "writer-1");
     writerCustomer0.start();
+    writerCustomer1.start();
 
-    writerCustomer0.requestMakeReservation("seat3");
+    System.out.println("\n===============> Flight Name: " + dataBase.getFlightName().toUpperCase() + " <===============\n\n");
+
+    // writerCustomer0.requestMakeReservation("seat4");
+    // writerCustomer1.requestMakeReservation("seat1");
+    // writerCustomer0.requestMakeReservation("seat3");
+    // writerCustomer0.requestMakeReservation("seat2");
+    // writerCustomer1.requestMakeReservation("seat3");
+
+    // readerCustomersArray[0].requestQueryReservation();
+    // readerCustomersArray[2].requestQueryReservation();
+
+    // writerCustomer0.requestCancelReservation("seat3");
+    // writerCustomer1.requestCancelReservation("seat3");
+
+    // readerCustomersArray[3].requestQueryReservation();
+    // readerCustomersArray[4].requestQueryReservation();
+
+    // writerCustomer0.requestMakeReservation("seat2");
+    // writerCustomer0.requestMakeReservation("seat2");
+    // writerCustomer1.requestMakeReservation("seat2");
+    // writerCustomer1.requestCancelReservation("seat2");
+
     writerCustomer0.requestMakeReservation("seat3");
     writerCustomer0.requestCancelReservation("seat3");
-
-    readerCustomer3.requestQueryReservation();
-    readerCustomer3.requestQueryReservation();
-    readerCustomer2.requestQueryReservation();
-    readerCustomer1.requestQueryReservation();
-
-
+    writerCustomer0.requestMakeReservation("seat3");
+    writerCustomer0.requestMakeReservation("seat3");
+    writerCustomer0.requestMakeReservation("seat3");
+    readerCustomersArray[4].requestQueryReservation();
   }
+
+  static ReaderCustomer[] readerCustomerCreater(int howMany, Lock lock, DataBase dataBase) {
+    ReaderCustomer[] readerArray = new ReaderCustomer[howMany];
+    for(int i = 0; i < howMany; i++){
+      readerArray[i] = new ReaderCustomer(dataBase, lock, "reader-" + i);
+    }
+
+    return readerArray;
+  } 
 }
