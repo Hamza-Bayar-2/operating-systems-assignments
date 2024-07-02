@@ -33,7 +33,7 @@ public class WriterCustomer extends Thread{
       lock.lock();
       // Simulate delay. if this delay is greater than the latch.await time 
       // the reservationTask thread will be interrupted.
-      sleep(500);
+      sleep(100);
       String seatId = seatIdQueue.poll();
       if(dataBase.getpassengerName(seatId).equals("empty")) {
         dataBase.changeSeatState(seatId, getName());
@@ -56,7 +56,7 @@ public class WriterCustomer extends Thread{
       lock.lock();
       // Simulate delay. if this delay is greater than the latch.await time 
       // the reservationTask thread will be interrupted.
-      sleep(500);
+      sleep(100);
       String seatId = seatIdQueue.poll();
       if(dataBase.getpassengerName(seatId).equals(getName())) {
         // Because passenger is canceling the reservation the passengerName will be empty
